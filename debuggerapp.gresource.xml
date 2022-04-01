@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/org/c4z/debuggerapp">
+    <file>window.xml</file>
+  </gresource>
+  <gresource prefix="/org/c4z/debuggerapp">
+    <file>ppu_registers_window.xml</file>
+  </gresource>
+  <gresource prefix="/org/c4z/debuggerapp">
+    <file>ppu_tables_window.xml</file>
+  </gresource>
+  <gresource prefix="/org/c4z/debuggerapp">
+    <file>memory_window.xml</file>
+  </gresource>
+  <gresource prefix="/org/c4z/debuggerapp">
+    <file>disassembler_window.xml</file>
+  </gresource>
+  <gresource prefix="/org/c4z/debuggerapp">
+    <file>breakpoint_window.xml</file>
+  </gresource>
+  <gresource prefix="/org/c4z/debuggerapp">
+    <file>system_palette_window.xml</file>
+  </gresource>
+  <gresource prefix="/org/c4z/debuggerapp">
+    <file>oam_window.xml</file>
+  </gresource>
+</gresources>

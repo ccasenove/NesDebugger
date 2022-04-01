@@ -1,0 +1,23 @@
+{
+  "files.associations": {
+    "cpu.h": "c",
+    "screen.h": "c",
+    "keyboard.h": "c",
+    "chip8.h": "c",
+    "ram.h": "c",
+    "ppu.h": "c",
+    "ppu-memory.h": "c",
+    "nes.h": "c",
+    "debugger.h": "c",
+    "debugger_win.h": "c",
+    "debugger_app.h": "c",
+    "memory_win.h": "c",
+    "system_palette_win.h": "c",
+    "ppu_registers_win.h": "c",
+    "ppu_tables_win.h": "c"
+  },
+  "cmake.debugConfig": {
+    "args": [
+    ]
+}
+}

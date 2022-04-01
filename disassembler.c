@@ -1,0 +1,255 @@
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
+#include "disassembler.h"
+
+INSTRUCTION_INFO INST_01 = {"ORA", INDEXED_INDIRECT};
+INSTRUCTION_INFO INST_05 = {"ORA", ZERO_PAGE};
+INSTRUCTION_INFO INST_06 = {"ASL", ZERO_PAGE};
+INSTRUCTION_INFO INST_09 = {"ORA", IMMEDIATE};
+INSTRUCTION_INFO INST_0A = {"ASL", ACCUMULATOR};
+INSTRUCTION_INFO INST_0D = {"ORA", ABSOLUTE};
+INSTRUCTION_INFO INST_0E = {"ASL", ABSOLUTE};
+INSTRUCTION_INFO INST_10 = {"BPL", RELATIVE};
+INSTRUCTION_INFO INST_11 = {"ORA", INDIRECT_INDEXED};
+INSTRUCTION_INFO INST_15 = {"ORA", ZERO_PAGE_X};
+INSTRUCTION_INFO INST_16 = {"ASL", ZERO_PAGE_X};
+INSTRUCTION_INFO INST_18 = {"CLC", IMPLIED};
+INSTRUCTION_INFO INST_19 = {"ORA", ABSOLUTE_Y};
+INSTRUCTION_INFO INST_1D = {"ORA", ABSOLUTE_X};
+INSTRUCTION_INFO INST_1E = {"ASL", ABSOLUTE_X};
+INSTRUCTION_INFO INST_20 = {"JSR", ABSOLUTE};
+INSTRUCTION_INFO INST_21 = {"AND", INDEXED_INDIRECT};
+INSTRUCTION_INFO INST_25 = {"AND", ZERO_PAGE};
+INSTRUCTION_INFO INST_29 = {"AND", IMMEDIATE};
+INSTRUCTION_INFO INST_2D = {"AND", ABSOLUTE};
+INSTRUCTION_INFO INST_31 = {"AND", INDIRECT_INDEXED};
+INSTRUCTION_INFO INST_35 = {"AND", ZERO_PAGE_X};
+INSTRUCTION_INFO INST_38 = {"SEC", IMPLIED};
+INSTRUCTION_INFO INST_39 = {"AND", ABSOLUTE_Y};
+INSTRUCTION_INFO INST_3D = {"AND", ABSOLUTE_X};
+INSTRUCTION_INFO INST_40 = {"RTI", IMPLIED};
+INSTRUCTION_INFO INST_41 = {"EOR", INDEXED_INDIRECT};
+INSTRUCTION_INFO INST_45 = {"EOR", ZERO_PAGE};
+INSTRUCTION_INFO INST_46 = {"LSR", ZERO_PAGE};
+INSTRUCTION_INFO INST_48 = {"PHA", IMPLIED};
+INSTRUCTION_INFO INST_49 = {"EOR", IMMEDIATE};
+INSTRUCTION_INFO INST_4A = {"LSR", ACCUMULATOR};
+INSTRUCTION_INFO INST_4C = {"JMP", ABSOLUTE};
+INSTRUCTION_INFO INST_4D = {"EOR", ABSOLUTE};
+INSTRUCTION_INFO INST_51 = {"EOR", INDIRECT_INDEXED};
+INSTRUCTION_INFO INST_55 = {"EOR", ZERO_PAGE_X};
+INSTRUCTION_INFO INST_59 = {"EOR", ABSOLUTE_Y};
+INSTRUCTION_INFO INST_5D = {"EOR", ABSOLUTE_X};
+INSTRUCTION_INFO INST_60 = {"RTS", IMPLIED};
+INSTRUCTION_INFO INST_61 = {"ADC", INDEXED_INDIRECT};
+INSTRUCTION_INFO INST_65 = {"ADC", ZERO_PAGE};
+INSTRUCTION_INFO INST_66 = {"ROR", ZERO_PAGE};
+INSTRUCTION_INFO INST_68 = {"PLA", IMPLIED};
+INSTRUCTION_INFO INST_69 = {"ADC", IMMEDIATE};
+INSTRUCTION_INFO INST_6A = {"ROR", ACCUMULATOR};
+INSTRUCTION_INFO INST_6C = {"JMP", INDIRECT};
+INSTRUCTION_INFO INST_6D = {"ADC", ABSOLUTE};
+INSTRUCTION_INFO INST_6E = {"ROR", ABSOLUTE};
+INSTRUCTION_INFO INST_71 = {"ADC", INDIRECT_INDEXED};
+INSTRUCTION_INFO INST_75 = {"ADC", ZERO_PAGE_X};
+INSTRUCTION_INFO INST_76 = {"ROR", ZERO_PAGE_X};
+INSTRUCTION_INFO INST_78 = {"SEI", IMPLIED};
+INSTRUCTION_INFO INST_79 = {"ADC", ABSOLUTE_Y};
+INSTRUCTION_INFO INST_7D = {"ADC", ABSOLUTE_X};
+INSTRUCTION_INFO INST_7E = {"ROR", ABSOLUTE_X};
+INSTRUCTION_INFO INST_81 = {"STA", INDEXED_INDIRECT};
+INSTRUCTION_INFO INST_84 = {"STY", ZERO_PAGE};
+INSTRUCTION_INFO INST_85 = {"STA", ZERO_PAGE};
+INSTRUCTION_INFO INST_86 = {"STX", ZERO_PAGE};
+INSTRUCTION_INFO INST_88 = {"DEY", IMPLIED};
+INSTRUCTION_INFO INST_8A = {"TXA", IMPLIED};
+INSTRUCTION_INFO INST_8C = {"STY", ABSOLUTE};
+INSTRUCTION_INFO INST_8D = {"STA", ABSOLUTE};
+INSTRUCTION_INFO INST_8E = {"STX", ABSOLUTE};
+INSTRUCTION_INFO INST_90 = {"BCC", RELATIVE};
+INSTRUCTION_INFO INST_91 = {"STA", INDIRECT_INDEXED};
+INSTRUCTION_INFO INST_94 = {"STY", ZERO_PAGE_X};
+INSTRUCTION_INFO INST_95 = {"STA", ZERO_PAGE_X};
+INSTRUCTION_INFO INST_96 = {"STX", ZERO_PAGE_Y};
+INSTRUCTION_INFO INST_98 = {"TYA", IMPLIED};
+INSTRUCTION_INFO INST_99 = {"STA", ABSOLUTE_Y};
+INSTRUCTION_INFO INST_9A = {"TXS", IMPLIED};
+INSTRUCTION_INFO INST_9D = {"STA", ABSOLUTE_X};
+INSTRUCTION_INFO INST_A0 = {"LDY", IMMEDIATE};
+INSTRUCTION_INFO INST_A1 = {"LDA", INDEXED_INDIRECT};
+INSTRUCTION_INFO INST_A2 = {"LDX", IMMEDIATE};
+INSTRUCTION_INFO INST_A4 = {"LDY", ZERO_PAGE};
+INSTRUCTION_INFO INST_A5 = {"LDA", ZERO_PAGE};
+INSTRUCTION_INFO INST_A6 = {"LDX", ZERO_PAGE};
+INSTRUCTION_INFO INST_A8 = {"TAY", IMPLIED};
+INSTRUCTION_INFO INST_A9 = {"LDA", IMMEDIATE};
+INSTRUCTION_INFO INST_AA = {"TAX", IMPLIED};
+INSTRUCTION_INFO INST_AC = {"LDY", ABSOLUTE};
+INSTRUCTION_INFO INST_AD = {"LDA", ABSOLUTE};
+INSTRUCTION_INFO INST_AE = {"LDX", ABSOLUTE};
+INSTRUCTION_INFO INST_B0 = {"BCS", RELATIVE};
+INSTRUCTION_INFO INST_B1 = {"LDA", INDIRECT_INDEXED};
+INSTRUCTION_INFO INST_B4 = {"LDY", ZERO_PAGE_X};
+INSTRUCTION_INFO INST_B5 = {"LDA", ZERO_PAGE_X};
+INSTRUCTION_INFO INST_B6 = {"LDX", ZERO_PAGE_Y};
+INSTRUCTION_INFO INST_B9 = {"LDA", ABSOLUTE_Y};
+INSTRUCTION_INFO INST_BC = {"LDY", ABSOLUTE_X};
+INSTRUCTION_INFO INST_BD = {"LDA", ABSOLUTE_X};
+INSTRUCTION_INFO INST_BE = {"LDX", ABSOLUTE_Y};
+INSTRUCTION_INFO INST_C0 = {"CPY", IMMEDIATE};
+INSTRUCTION_INFO INST_C1 = {"CMP", INDEXED_INDIRECT};
+INSTRUCTION_INFO INST_C4 = {"CPY", ZERO_PAGE};
+INSTRUCTION_INFO INST_C5 = {"CMP", ZERO_PAGE};
+INSTRUCTION_INFO INST_C6 = {"DEC", ZERO_PAGE};
+INSTRUCTION_INFO INST_C8 = {"INY", IMPLIED};
+INSTRUCTION_INFO INST_C9 = {"CMP", IMMEDIATE};
+INSTRUCTION_INFO INST_CA = {"DEX", IMPLIED};
+INSTRUCTION_INFO INST_CC = {"CPY", ABSOLUTE};
+INSTRUCTION_INFO INST_CD = {"CMP", ABSOLUTE};
+INSTRUCTION_INFO INST_CE = {"DEC", ABSOLUTE};
+INSTRUCTION_INFO INST_D0 = {"BNE", RELATIVE};
+INSTRUCTION_INFO INST_D1 = {"CMP", INDIRECT_INDEXED};
+INSTRUCTION_INFO INST_D5 = {"CMP", ZERO_PAGE_X};
+INSTRUCTION_INFO INST_D6 = {"DEC", ZERO_PAGE_X};
+INSTRUCTION_INFO INST_D8 = {"CLD", IMPLIED};
+INSTRUCTION_INFO INST_D9 = {"CMP", ABSOLUTE_Y};
+INSTRUCTION_INFO INST_DD = {"CMP", ABSOLUTE_X};
+INSTRUCTION_INFO INST_DE = {"DEC", ABSOLUTE_X};
+INSTRUCTION_INFO INST_E0 = {"CPX", IMMEDIATE};
+INSTRUCTION_INFO INST_E1 = {"SBC", INDEXED_INDIRECT};
+INSTRUCTION_INFO INST_E4 = {"CPX", ZERO_PAGE};
+INSTRUCTION_INFO INST_E5 = {"SBC", ZERO_PAGE};
+INSTRUCTION_INFO INST_E6 = {"INC", ZERO_PAGE};
+INSTRUCTION_INFO INST_E8 = {"INX", IMPLIED};
+INSTRUCTION_INFO INST_E9 = {"SBC", IMMEDIATE};
+INSTRUCTION_INFO INST_EC = {"CPX", ABSOLUTE};
+INSTRUCTION_INFO INST_ED = {"SBC", ABSOLUTE};
+INSTRUCTION_INFO INST_EE = {"INC", ABSOLUTE};
+INSTRUCTION_INFO INST_F0 = {"BEQ", RELATIVE};
+INSTRUCTION_INFO INST_F1 = {"SBC", INDIRECT_INDEXED};
+INSTRUCTION_INFO INST_F5 = {"SBC", ZERO_PAGE_X};
+INSTRUCTION_INFO INST_F6 = {"INC", ZERO_PAGE_X};
+INSTRUCTION_INFO INST_F9 = {"SBC", ABSOLUTE_Y};
+INSTRUCTION_INFO INST_FD = {"SBC", ABSOLUTE_X};
+INSTRUCTION_INFO INST_FE = {"INC", ABSOLUTE_X};
+
+INSTRUCTION_INFO *instructions_info[] = {
+    &INST_01, 0, 0, 0, 0, &INST_05, 0, 0, 0, 0, &INST_0A, 0, 0, 0, 0, 0,
+    &INST_10, 0, 0, 0, 0, 0, 0, 0, &INST_18, 0, 0, 0, 0, 0, 0, 0,
+    &INST_20, 0, 0, 0, 0, &INST_25, 0, 0, 0, &INST_29, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, &INST_38, 0, 0, 0, 0, 0, 0, 0,
+    &INST_40, 0, 0, 0, 0, 0, &INST_46, 0, &INST_48, &INST_49, &INST_4A, 0, &INST_4C, &INST_4D, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    &INST_60, 0, 0, 0, 0, &INST_65, &INST_66, 0, &INST_68, &INST_69, 0, 0, &INST_6C, &INST_6D, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, &INST_78, 0, 0, 0, 0, 0, 0, 0,
+    0, &INST_81, 0, 0, &INST_84, &INST_85, &INST_86, 0, &INST_88, 0, &INST_8A, 0, 0, &INST_8D, 0, 0,
+    &INST_90, &INST_91, 0, 0, 0, 0, 0, 0, &INST_98, &INST_99, &INST_9A, 0, 0, &INST_9D, 0, 0,
+    &INST_A0, 0, &INST_A2, 0, &INST_A4, &INST_A5, &INST_A6, 0, &INST_A8, &INST_A9, &INST_AA, 0, 0, &INST_AD, 0, 0,
+    &INST_B0, &INST_B1, 0, 0, &INST_B4, &INST_B5, &INST_B6, 0, 0, &INST_B9, 0, 0, &INST_BC, &INST_BD, &INST_BE, 0,
+    &INST_C0, 0, 0, 0, &INST_C4, &INST_C5, &INST_C6, 0, &INST_C8, &INST_C9, &INST_CA, 0, 0, 0, 0, 0,
+    &INST_D0, 0, 0, 0, 0, 0, 0, 0, &INST_D8, &INST_D9, 0, 0, 0, 0, 0, 0,
+    &INST_E0, 0, 0, 0, &INST_E4, &INST_E5, &INST_E6, 0, &INST_E8, &INST_E9, 0, 0, 0, 0, 0, 0,
+    &INST_F0, &INST_F1, 0, 0, 0, &INST_F5, &INST_F6, 0, 0, &INST_F9, 0, 0, 0, &INST_FD, &INST_FE, 0};
+
+void dis_parse_instruction(unsigned char byte1, unsigned char byte2, unsigned char byte3,
+                           INSTRUCTION *instruction)
+{
+    INSTRUCTION_INFO *info = instructions_info[byte1];
+
+    instruction->opcode = byte1;
+
+    if (!info)
+    {
+        instruction->mnemonic = 0;
+        instruction->length = 1;
+        return;
+    }
+
+    instruction->mnemonic = info->mnemonic;
+    instruction->addressing_mode = info->addressing_mode;
+
+    switch (info->addressing_mode)
+    {
+    case IMPLIED:
+    case ACCUMULATOR:
+        instruction->length = 1;
+        break;
+    case IMMEDIATE:
+        instruction->length = 2;
+        instruction->value = byte2;
+        break;
+    case ZERO_PAGE:
+    case ZERO_PAGE_X:
+    case ZERO_PAGE_Y:
+    case INDIRECT_INDEXED:
+    case INDEXED_INDIRECT:
+        instruction->length = 2;
+        instruction->address = byte2;
+        break;
+    case RELATIVE:
+        instruction->length = 2;
+        instruction->displacement = byte2;
+        break;
+    case ABSOLUTE:
+    case ABSOLUTE_X:
+    case ABSOLUTE_Y:
+    case INDIRECT:
+        instruction->length = 3;
+        instruction->address = byte2 | (byte3 << 8);
+        break;
+    }
+}
+
+void dis_instruction_to_str(INSTRUCTION *instruction, unsigned short pc, char *str)
+{
+    if (instruction->mnemonic == 0)
+    {
+        sprintf(str, "%04X    ??? %02X ???", pc, instruction->opcode);
+        return;
+    }
+
+    sprintf(str, "%04X    %s ", pc, instruction->mnemonic);
+    char *operand_pointer = str + strlen(str);
+
+    switch (instruction->addressing_mode)
+    {
+    case ACCUMULATOR:
+        sprintf(operand_pointer, "A");
+        break;
+    case IMMEDIATE:
+        sprintf(operand_pointer, "#$%02X", instruction->value);
+        break;
+    case ZERO_PAGE:
+        sprintf(operand_pointer, "$%02X", instruction->address);
+        break;
+    case ZERO_PAGE_X:
+        sprintf(operand_pointer, "$%02X,X", instruction->address);
+        break;
+    case ZERO_PAGE_Y:
+        sprintf(operand_pointer, "$%02X,Y", instruction->address);
+        break;
+    case RELATIVE:
+        sprintf(operand_pointer, "$%04X", pc + 2 + instruction->displacement);
+        break;
+    case ABSOLUTE:
+        sprintf(operand_pointer, "$%04X", instruction->address);
+        break;
+    case ABSOLUTE_X:
+        sprintf(operand_pointer, "$%04X,X", instruction->address);
+        break;
+    case ABSOLUTE_Y:
+        sprintf(operand_pointer, "$%04X,Y", instruction->address);
+        break;
+    case INDIRECT:
+        sprintf(operand_pointer, "($%04X)", instruction->address);
+        break;
+    case INDEXED_INDIRECT:
+        sprintf(operand_pointer, "($%02X,X)", instruction->address);
+        break;
+    case INDIRECT_INDEXED:
+        sprintf(operand_pointer, "($%02X),Y", instruction->address);
+        break;
+    }
+}
